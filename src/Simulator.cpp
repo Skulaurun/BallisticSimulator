@@ -25,27 +25,12 @@ void Simulator::run(const float step) {
     entt::entity target = registry.create();
     registry.emplace<Position>(target, Position { .p = pTarget });
     
-    float angleGuess = 90.0f;
-    float magnitude = std::sqrtf(pTarget.x * pTarget.x + pTarget.z * pTarget.z);
-    float dx = bSpeed * (pTarget.x / magnitude) * std::cosf(math::radf(angleGuess));
-    float dz = bSpeed * (pTarget.z / magnitude) * std::cosf(math::radf(angleGuess));
-    float dy = bSpeed * std::sinf(math::radf(angleGuess));
-
-    entt::entity bullet = registry.create();
-    registry.emplace<Position>(bullet, Position{ .p = pSource });
-    registry.emplace<Velocity>(bullet, Velocity{ .d = { dx, dy, dz } });
-    registry.emplace<RigidBody>(bullet, RigidBody{ .mass = bMass });
+    float angleGuess = 3.2f;
+    entt::entity bullet = spawnBullet(angleGuess);
 
     while (true) {
-        for (auto [entity, velocity, body] : registry.view<Velocity, RigidBody>().each()) {
-            velocity.d.y -= 9.8 * step;
-        }
-
-        for (auto [entity, position, velocity] : registry.view<Position, Velocity>().each()) {
-            position.p.x += velocity.d.x * step;
-            position.p.y += velocity.d.y * step;
-            position.p.z += velocity.d.z * step;
-        }
+        updatePhysics(step);
+        updateMovement(step);
 
         math::Point3f& t = registry.get<Position>(target).p;
         math::Point3f& b = registry.get<Position>(bullet).p;
@@ -57,6 +42,36 @@ void Simulator::run(const float step) {
         }
     }
 
+}
+
+entt::entity Simulator::spawnBullet(const float angle) {
+    float magnitude = std::sqrtf(pTarget.x * pTarget.x + pTarget.z * pTarget.z);
+    float dx = bSpeed * (pTarget.x / magnitude) * std::cosf(math::radf(angle));
+    float dz = bSpeed * (pTarget.z / magnitude) * std::cosf(math::radf(angle));
+    float dy = bSpeed * std::sinf(math::radf(angle));
+
+    entt::entity bullet = registry.create();
+    registry.emplace<Position>(bullet, Position{ .p = pSource });
+    registry.emplace<Velocity>(bullet, Velocity{ .d = { dx, dy, dz } });
+    registry.emplace<RigidBody>(bullet, RigidBody{ .mass = bMass });
+
+    return bullet;
+}
+
+void Simulator::updatePhysics(const float step) {
+    auto view = registry.view<Velocity, RigidBody>();
+    for (auto [entity, velocity, body] : view.each()) {
+        velocity.d.y -= 9.8 * step;
+    }
+}
+
+void Simulator::updateMovement(const float step) {
+    auto view = registry.view<Position, Velocity>();
+    for (auto [entity, position, velocity] : view.each()) {
+        position.p.x += velocity.d.x * step;
+        position.p.y += velocity.d.y * step;
+        position.p.z += velocity.d.z * step;
+    }
 }
 
 float Simulator::getHitAngle() {

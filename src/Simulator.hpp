@@ -38,6 +38,12 @@ public:
     float getHitAngle();
 
 private:
+    entt::entity spawnBullet(const float angle);
+
+    void updatePhysics(const float step);
+    void updateMovement(const float step);
+
+private:
     entt::registry registry;
 
     // TODO: Make struct
