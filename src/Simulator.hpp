@@ -1,19 +1,15 @@
 #pragma once
 
+#include "Math.hpp"
+
 #include <entt/entt.hpp>
 
-struct Point3D {
-    float x;
-    float y;
-    float z;
-};
-
 struct Position {
-    Point3D p;
+    math::Point3f p;
 };
 
 struct Velocity {
-    Point3D d;
+    math::Point3f d;
 };
 
 struct RigidBody {
@@ -32,7 +28,7 @@ public:
     * speed [m/s]
     * mass [g]
     */
-    void setParams(const Point3D source, const Point3D target, const float speed, const float mass);
+    void setParams(const math::Point3f source, const math::Point3f target, const float speed, const float mass);
 
     void run(const float step);
 
@@ -45,8 +41,8 @@ private:
     entt::registry registry;
 
     // TODO: Make struct
-    Point3D pSource;
-    Point3D pTarget;
+    math::Point3f pSource;
+    math::Point3f pTarget;
     float bSpeed;
     float bMass;
 

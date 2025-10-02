@@ -1,10 +1,8 @@
 #include "Simulator.hpp"
 
-#define _USE_MATH_DEFINES
-
 #include <chrono>
 #include <thread>
-#include <cmath>
+
 #include <print>
 
 Simulator::Simulator() :
@@ -15,7 +13,7 @@ Simulator::Simulator() :
     hitAngle(0.0f)
 {}
 
-void Simulator::setParams(const Point3D source, const Point3D target, const float speed, const float mass) {
+void Simulator::setParams(const math::Point3f source, const math::Point3f target, const float speed, const float mass) {
     pSource = source;
     pTarget = target;
     bSpeed = speed;
@@ -26,12 +24,12 @@ void Simulator::run(const float step) {
 
     entt::entity target = registry.create();
     registry.emplace<Position>(target, Position { .p = pTarget });
-
-    float angleGuess = 3.15f;
+    
+    float angleGuess = 90.0f;
     float magnitude = std::sqrtf(pTarget.x * pTarget.x + pTarget.z * pTarget.z);
-    float dx = bSpeed * (pTarget.x / magnitude);
-    float dz = bSpeed * (pTarget.z / magnitude);
-    float dy = bSpeed * std::sinf(angleGuess * (M_PI / 180.0f));
+    float dx = bSpeed * (pTarget.x / magnitude) * std::cosf(math::radf(angleGuess));
+    float dz = bSpeed * (pTarget.z / magnitude) * std::cosf(math::radf(angleGuess));
+    float dy = bSpeed * std::sinf(math::radf(angleGuess));
 
     entt::entity bullet = registry.create();
     registry.emplace<Position>(bullet, Position{ .p = pSource });
@@ -49,11 +47,9 @@ void Simulator::run(const float step) {
             position.p.z += velocity.d.z * step;
         }
 
-        Point3D& t = registry.get<Position>(target).p;
-        Point3D& b = registry.get<Position>(bullet).p;
+        math::Point3f& t = registry.get<Position>(target).p;
+        math::Point3f& b = registry.get<Position>(bullet).p;
         std::println("[{}, {}, {}], [{}, {}, {}]", t.x, t.y, t.z, b.x, b.y, b.z);
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
 
         if (b.y <= 0.0f) {
             /* Hit ground */
