@@ -16,6 +16,16 @@ struct RigidBody {
     float mass;
 };
 
+struct RangeCollider {
+    entt::entity target;
+    float error;
+
+    bool isHit = false;
+    
+    // For simplicity
+    bool isGroundHit = false;
+};
+
 class Simulator {
 
 public:
@@ -35,13 +45,14 @@ public:
     /*
         return angle [deg]
     */
-    float getHitAngle();
+    float getHitAngle() const;
 
 private:
-    entt::entity spawnBullet(const float angle);
+    entt::entity spawnBullet(const float angle, const entt::entity target);
 
     void updatePhysics(const float step);
     void updateMovement(const float step);
+    void updateCollision();
 
 private:
     entt::registry registry;
