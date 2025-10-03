@@ -40,7 +40,7 @@ public:
     */
     void setParams(const math::Point3f source, const math::Point3f target, const float speed, const float mass);
 
-    void run(const float step);
+    bool run(const float step);
 
     /*
         return angle [deg]

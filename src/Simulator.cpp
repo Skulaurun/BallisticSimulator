@@ -20,29 +20,37 @@ void Simulator::setParams(const math::Point3f source, const math::Point3f target
     bMass = mass;
 }
 
-void Simulator::run(const float step) {
+bool Simulator::run(const float step) {
     entt::entity target = registry.create();
     registry.emplace<Position>(target, Position { .p = pTarget });
     
-    float angleGuess = 3.2f;
-    entt::entity bullet = spawnBullet(angleGuess, target);
-    RangeCollider& collider = registry.get<RangeCollider>(bullet);
+    for (float angleGuess = -90.0f; angleGuess <= 90.0f; angleGuess += 0.1f) {
+        entt::entity bullet = spawnBullet(angleGuess, target);
+        RangeCollider& collider = registry.get<RangeCollider>(bullet);
 
-    while (true) {
-        updatePhysics(step);
-        updateMovement(step);
-        updateCollision();
+        while (true) {
+            updatePhysics(step);
+            updateMovement(step);
+            updateCollision();
 
-        math::Point3f& t = registry.get<Position>(target).p;
-        math::Point3f& b = registry.get<Position>(bullet).p;
-        std::println("[{}, {}, {}], [{}, {}, {}]", t.x, t.y, t.z, b.x, b.y, b.z);
+            math::Point3f& t = registry.get<Position>(target).p;
+            math::Point3f& b = registry.get<Position>(bullet).p;
+            std::println("[{}, {}, {}], [{}, {}, {}]", t.x, t.y, t.z, b.x, b.y, b.z);
 
-        if (collider.isHit || collider.isGroundHit) {
-            break;
+            if (collider.isHit) {
+                registry.destroy(bullet);
+                hitAngle = angleGuess;
+                return true;
+            }
+
+            if (collider.isGroundHit) {
+                registry.destroy(bullet);
+                break;
+            }
         }
     }
 
-    hitAngle = angleGuess;
+    return false;
 }
 
 entt::entity Simulator::spawnBullet(const float angle, const entt::entity target) {
@@ -55,7 +63,7 @@ entt::entity Simulator::spawnBullet(const float angle, const entt::entity target
     registry.emplace<Position>(bullet, Position{ .p = pSource });
     registry.emplace<Velocity>(bullet, Velocity{ .d = { dx, dy, dz } });
     registry.emplace<RigidBody>(bullet, RigidBody{ .mass = bMass });
-    registry.emplace<RangeCollider>(bullet, RangeCollider{ .target = target, .error = 10.0f });
+    registry.emplace<RangeCollider>(bullet, RangeCollider{ .target = target, .error = 1.0f });
 
     return bullet;
 }
