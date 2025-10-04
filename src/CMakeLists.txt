@@ -1,5 +1,6 @@
 set(SIMULATOR_SOURCES
     "Simulator.cpp"
+    "Application.cpp"
     CACHE INTERNAL ""
 )
 
