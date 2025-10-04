@@ -29,3 +29,4 @@ FetchContent_MakeAvailable(
 )
 
 add_subdirectory(src ${CMAKE_BINARY_DIR}/bin)
+add_subdirectory(test ${CMAKE_BINARY_DIR}/test)
