@@ -1,6 +1,6 @@
 set(SIMULATOR_SOURCES
     "Simulator.cpp"
-    PARENT_SCOPE
+    CACHE INTERNAL ""
 )
 
 add_executable(ShootingSimulator
