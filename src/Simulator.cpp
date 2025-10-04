@@ -55,9 +55,12 @@ bool Simulator::run(const float step) {
 }
 
 entt::entity Simulator::spawnBullet(const float angle, const entt::entity target) {
-    float magnitude = std::sqrtf(pTarget.x * pTarget.x + pTarget.z * pTarget.z);
-    float dx = bSpeed * (pTarget.x / magnitude) * std::cosf(math::radf(angle));
-    float dz = bSpeed * (pTarget.z / magnitude) * std::cosf(math::radf(angle));
+    float a = pTarget.x - pSource.x;
+    float b = pTarget.z - pSource.z;
+
+    float magnitude = std::sqrtf(a * a + b * b);
+    float dx = bSpeed * (a / magnitude) * std::cosf(math::radf(angle));
+    float dz = bSpeed * (b / magnitude) * std::cosf(math::radf(angle));
     float dy = bSpeed * std::sinf(math::radf(angle));
 
     entt::entity bullet = registry.create();
