@@ -23,4 +23,12 @@ inline double rad(double deg) {
     return deg * M_PI / 180.0;
 }
 
+inline float degf(float rad) {
+    return rad * 180.0f / M_PI;
+}
+
+inline double deg(double rad) {
+    return rad * 180.0 / M_PI;
+}
+
 }
