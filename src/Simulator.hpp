@@ -46,6 +46,7 @@ public:
         return angle [deg]
     */
     float getHitAngle() const;
+    const std::vector<math::Point3f>& getBulletPath() const;
 
 private:
     entt::entity spawnBullet(const float angle, const entt::entity target);
@@ -64,5 +65,6 @@ private:
     float bMass;
 
     float hitAngle;
+    std::vector<math::Point3f> bulletPath;
 
 };

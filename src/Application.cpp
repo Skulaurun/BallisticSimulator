@@ -60,6 +60,10 @@ void Application::commandStart() {
     canHit = simulator.run(input.step);
     if (canHit) {
         hitAngle = simulator.getHitAngle();
+        const auto& bulletPath = simulator.getBulletPath();
+        for (const auto& p : bulletPath) {
+            std::println("[{:.0f},{:.0f},{:.0f}]", p.x, p.y, p.z);
+        }
         std::println("Hit at \x1B[92m{}deg\033[0m", hitAngle);
     } else {
         std::println("Solution not found, is target out of range?");

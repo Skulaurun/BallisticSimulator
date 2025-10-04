@@ -28,14 +28,15 @@ bool Simulator::run(const float step) {
         entt::entity bullet = spawnBullet(angleGuess, target);
         RangeCollider& collider = registry.get<RangeCollider>(bullet);
 
+        math::Point3f& position = registry.get<Position>(bullet).p;
+        bulletPath.clear();
+
         while (true) {
             updatePhysics(step);
             updateMovement(step);
             updateCollision();
 
-            //math::Point3f& t = registry.get<Position>(target).p;
-            //math::Point3f& b = registry.get<Position>(bullet).p;
-            //std::println("[{}, {}, {}], [{}, {}, {}]", t.x, t.y, t.z, b.x, b.y, b.z);
+            bulletPath.push_back(position);
 
             if (collider.isHit) {
                 registry.destroy(bullet);
@@ -105,4 +106,8 @@ void Simulator::updateCollision() {
 
 float Simulator::getHitAngle() const {
     return hitAngle;
+}
+
+const std::vector<math::Point3f>& Simulator::getBulletPath() const {
+    return bulletPath;
 }
