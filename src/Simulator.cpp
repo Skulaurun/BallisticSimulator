@@ -90,12 +90,11 @@ void Simulator::updateCollision() {
     for (auto [entity, position, collider] : view.each()) {
         math::Point3f& a = position.p;
         math::Point3f& b = registry.get<Position>(collider.target).p;
-        float distance = std::sqrtf(
-            std::powf(b.x - a.x, 2) +
-            std::powf(b.y - a.y, 2) +
-            std::powf(b.z - a.z, 2)
-        );
-        if (distance <= collider.error) {
+        float dx = b.x - a.x;
+        float dy = b.y - a.y;
+        float dz = b.z - a.z;
+        float distance = dx*dx + dy*dy + dz*dz;
+        if (distance <= collider.error * collider.error) {
             collider.isHit = true;
         }
         if (a.y <= 0.0f) {
