@@ -25,6 +25,9 @@ bool Simulator::run(const float step) {
     entt::entity target = registry.create();
     registry.emplace<Position>(target, Position { .p = pTarget });
     
+    // Probably would be better to spawn all projectiles at once, and then update
+    // Keeping all paths in memory could be a problem,
+    // so probably find angle first, and then run simulation again for the angle to build a path
     for (float angleGuess = 0.0f; angleGuess <= 90.0f; angleGuess += 0.1f) {
         entt::entity bullet = spawnBullet(angleGuess, target);
         RangeCollider& collider = registry.get<RangeCollider>(bullet);

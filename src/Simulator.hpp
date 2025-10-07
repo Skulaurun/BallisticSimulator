@@ -48,6 +48,8 @@ public:
     float getHitAngle() const;
     const std::vector<math::Point3f>& getBulletPath() const;
 
+    void setDrag(const bool withDrag) { this->withDrag = withDrag; }
+
 private:
     entt::entity spawnBullet(const float angle, const entt::entity target);
 
