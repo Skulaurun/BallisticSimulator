@@ -29,14 +29,14 @@ struct RangeCollider {
 class Simulator {
 
 public:
-    Simulator();
+    Simulator(const bool withDrag = true);
 
     /*
-    * source [m]
-    * target [m]
+    * source [m,m,m]
+    * target [m,m,m]
     * 
     * speed [m/s]
-    * mass [g]
+    * mass [kg]
     */
     void setParams(const math::Point3f source, const math::Point3f target, const float speed, const float mass);
 
@@ -57,6 +57,7 @@ private:
 
 private:
     entt::registry registry;
+    bool withDrag;
 
     // TODO: Make struct
     math::Point3f pSource;

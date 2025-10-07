@@ -11,7 +11,7 @@ Application::Application() : running(false), canHit(false), hitAngle(0.0f) {
         .pSource = math::Point3f{ 0.0f, 0.0f, 0.0f },
         .pTarget = math::Point3f{ 600.0f, 10.0f, 400.0f },
         .bSpeed = 100.0f,
-        .bMass = 6.5f,
+        .bMass = 40.0f,
 
         .step = 0.01f
     };

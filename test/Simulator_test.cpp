@@ -4,8 +4,8 @@
 #include <catch2/catch_all.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
-TEST_CASE("elevation angle") {
-    Simulator simulator;
+TEST_CASE("elevation angle (no drag)") {
+    Simulator simulator(false);
 
     const math::Point3f source = { 0.0f, 41.0f, 0.0f };
     const math::Point3f target = { 600.0f, 1.0f, 600.0f };

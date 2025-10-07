@@ -5,12 +5,13 @@
 
 #include <print>
 
-Simulator::Simulator() :
+Simulator::Simulator(const bool withDrag) :
     pSource{},
     pTarget{},
     bSpeed(0.0f),
     bMass(0.0f),
-    hitAngle(0.0f)
+    hitAngle(0.0f),
+    withDrag(withDrag)
 {}
 
 void Simulator::setParams(const math::Point3f source, const math::Point3f target, const float speed, const float mass) {
@@ -75,7 +76,28 @@ entt::entity Simulator::spawnBullet(const float angle, const entt::entity target
 void Simulator::updatePhysics(const float step) {
     auto view = registry.view<Velocity, RigidBody>();
     for (auto [entity, velocity, body] : view.each()) {
-        velocity.d.y -= 9.8 * step;
+        math::Point3f& v = velocity.d;
+
+        /*
+            Source: https://www.youtube.com/watch?v=iwfeqRBm3LQ
+        */
+
+        if (withDrag) {
+            constexpr float rho = 1.2f; // [kg/m^3]
+            constexpr float R = 0.155f; // 155mm
+            constexpr float A = M_PI * R * R;
+            constexpr float Cd = 0.295f; // Drag coefficient
+        
+            float vLength = v.magnitude();
+            math::Point3f vUnit = v.normalize();
+            math::Point3f F = -vUnit * 0.5f * A * Cd * vLength * vLength;
+        
+            // Apply Quadratic Drag Force
+            v += (F / body.mass) * step;
+        }
+
+        // Apply Gravity
+        v.y += -9.8 * step;
     }
 }
 
