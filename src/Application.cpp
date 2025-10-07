@@ -46,6 +46,7 @@ void Application::printHelp() {
     std::println("* source=({};{};{}) [m]", input.pSource.x, input.pSource.y, input.pSource.z);
     std::println("* target=({};{};{}) [m]", input.pTarget.x, input.pTarget.y, input.pTarget.z);
     std::println("* velocity={} [m/s]", input.bSpeed);
+    std::println("* mass={} [kg]", input.bMass);
     std::println("* step={}", input.step);
 
     std::println("\nType 'param=value' to change input params");
@@ -91,6 +92,11 @@ void Application::commandSetParam(const std::string_view line) {
         float result = parseNumber(value, parseError);
         if (!parseError) {
             input.bSpeed = result;
+        }
+    } else if (key == "mass") {
+        float result = parseNumber(value, parseError);
+        if (!parseError) {
+            input.bMass = result;
         }
     } else if (key == "step") {
         float result = parseNumber(value, parseError);
