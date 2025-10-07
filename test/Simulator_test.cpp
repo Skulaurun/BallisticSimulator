@@ -4,7 +4,7 @@
 #include <catch2/catch_all.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
-constexpr float g = 9.8;
+constexpr float g = 9.8f;
 
 static float vacMaxRange(const float v0) {
     /*

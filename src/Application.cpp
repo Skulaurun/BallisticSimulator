@@ -127,7 +127,7 @@ math::Vector3f Application::parsePoint3(const std::string_view value, bool& pars
     std::string s(value);
 
     bool isOk = true;
-    std::regex point("\(.+;.+;.+\)");
+    std::regex point("\\(.+;.+;.+\\)");
     if (std::regex_match(s, point)) {
         std::size_t p1 = s.find_first_of(';');
         std::size_t p2 = s.find_last_of(';');

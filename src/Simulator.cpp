@@ -89,7 +89,7 @@ void Simulator::updatePhysics(const float step) {
         if (withDrag) {
             constexpr float rho = 1.2f; // [kg/m^3]
             constexpr float R = 0.155f; // 155mm
-            constexpr float A = M_PI * R * R;
+            constexpr float A = float(M_PI) * R * R;
             constexpr float Cd = 0.295f; // Drag coefficient
         
             float vLength = v.magnitude();
@@ -101,7 +101,7 @@ void Simulator::updatePhysics(const float step) {
         }
 
         // Apply Gravity
-        v.y += -9.8 * step;
+        v.y += -9.8f * step;
     }
 }
 
