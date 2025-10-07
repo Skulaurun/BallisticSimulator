@@ -52,6 +52,7 @@ bool Simulator::run(const float step) {
         }
     }
 
+    registry.destroy(target);
     return false;
 }
 
