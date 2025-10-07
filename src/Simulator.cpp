@@ -14,7 +14,7 @@ Simulator::Simulator(const bool withDrag) :
     withDrag(withDrag)
 {}
 
-void Simulator::setParams(const math::Point3f source, const math::Point3f target, const float speed, const float mass) {
+void Simulator::setParams(const math::Vector3f source, const math::Vector3f target, const float speed, const float mass) {
     pSource = source;
     pTarget = target;
     bSpeed = speed;
@@ -32,7 +32,7 @@ bool Simulator::run(const float step) {
         entt::entity bullet = spawnBullet(angleGuess, target);
         RangeCollider& collider = registry.get<RangeCollider>(bullet);
 
-        math::Point3f& position = registry.get<Position>(bullet).p;
+        math::Vector3f& position = registry.get<Position>(bullet).p;
         bulletPath.clear();
 
         while (true) {
@@ -80,7 +80,7 @@ entt::entity Simulator::spawnBullet(const float angle, const entt::entity target
 void Simulator::updatePhysics(const float step) {
     auto view = registry.view<Velocity, RigidBody>();
     for (auto [entity, velocity, body] : view.each()) {
-        math::Point3f& v = velocity.d;
+        math::Vector3f& v = velocity.d;
 
         /*
             Source: https://www.youtube.com/watch?v=iwfeqRBm3LQ
@@ -93,8 +93,8 @@ void Simulator::updatePhysics(const float step) {
             constexpr float Cd = 0.295f; // Drag coefficient
         
             float vLength = v.magnitude();
-            math::Point3f vUnit = v.normalize();
-            math::Point3f F = -vUnit * 0.5f * A * Cd * vLength * vLength;
+            math::Vector3f vUnit = v.normalize();
+            math::Vector3f F = -vUnit * 0.5f * A * Cd * vLength * vLength;
         
             // Apply Quadratic Drag Force
             v += (F / body.mass) * step;
@@ -117,8 +117,8 @@ void Simulator::updateMovement(const float step) {
 void Simulator::updateCollision() {
     auto view = registry.view<Position, RangeCollider>();
     for (auto [entity, position, collider] : view.each()) {
-        math::Point3f& a = position.p;
-        math::Point3f& b = registry.get<Position>(collider.target).p;
+        math::Vector3f& a = position.p;
+        math::Vector3f& b = registry.get<Position>(collider.target).p;
         float dx = b.x - a.x;
         float dy = b.y - a.y;
         float dz = b.z - a.z;
@@ -136,6 +136,6 @@ float Simulator::getHitAngle() const {
     return hitAngle;
 }
 
-const std::vector<math::Point3f>& Simulator::getBulletPath() const {
+const std::vector<math::Vector3f>& Simulator::getBulletPath() const {
     return bulletPath;
 }

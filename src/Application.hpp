@@ -4,8 +4,8 @@
 #include "Math.hpp"
 
 struct InputParameters {
-    math::Point3f pSource;
-    math::Point3f pTarget;
+    math::Vector3f pSource;
+    math::Vector3f pTarget;
     float bSpeed;
     float bMass;
 
@@ -27,7 +27,7 @@ private:
     void commandSetParam(const std::string_view line);
 
     float parseNumber(const std::string_view value, bool& parseError);
-    math::Point3f parsePoint3(const std::string_view value, bool& parseError);
+    math::Vector3f parsePoint3(const std::string_view value, bool& parseError);
 
 private:
     bool running;

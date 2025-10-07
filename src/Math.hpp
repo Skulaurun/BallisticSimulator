@@ -6,7 +6,7 @@
 namespace math {
 
 template<typename T>
-struct Point3 {
+struct Vector3 {
     T x;
     T y;
     T z;
@@ -14,26 +14,26 @@ struct Point3 {
     inline T magnitude() {
         return std::sqrt(x * x + y * y + z * z);
     }
-    inline Point3<T> normalize() {
+    inline Vector3<T> normalize() {
         const T length = magnitude();
-        return Point3<T>(x / length, y / length, z / length);
+        return Vector3<T>(x / length, y / length, z / length);
     }
 
-    Point3<T> operator*(const T scalar) const { return Point3<T>(x * scalar, y * scalar, z * scalar); }
-    Point3<T> operator/(const T scalar) const { return Point3<T>(x / scalar, y / scalar, z / scalar); }
-    Point3<T> operator+(const T scalar) const { return Point3<T>(x + scalar, y + scalar, z + scalar); }
-    Point3<T> operator-(const T scalar) const { return Point3<T>(x - scalar, y - scalar, z - scalar); }
+    Vector3<T> operator*(const T scalar) const { return Vector3<T>(x * scalar, y * scalar, z * scalar); }
+    Vector3<T> operator/(const T scalar) const { return Vector3<T>(x / scalar, y / scalar, z / scalar); }
+    Vector3<T> operator+(const T scalar) const { return Vector3<T>(x + scalar, y + scalar, z + scalar); }
+    Vector3<T> operator-(const T scalar) const { return Vector3<T>(x - scalar, y - scalar, z - scalar); }
 
-    Point3<T> operator+(const Point3<T>& other) const { return Point3<T>(x + other.x, y + other.y, z + other.z); }
-    Point3<T> operator-(const Point3<T>& other) const { return Point3<T>(x - other.x, y - other.y, z - other.z); }
-    Point3<T>& operator+=(const Point3<T>& other) { x += other.x; y += other.y; z += other.z; return *this; }
-    Point3<T>& operator-=(const Point3<T>& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
+    Vector3<T> operator+(const Vector3<T>& other) const { return Vector3<T>(x + other.x, y + other.y, z + other.z); }
+    Vector3<T> operator-(const Vector3<T>& other) const { return Vector3<T>(x - other.x, y - other.y, z - other.z); }
+    Vector3<T>& operator+=(const Vector3<T>& other) { x += other.x; y += other.y; z += other.z; return *this; }
+    Vector3<T>& operator-=(const Vector3<T>& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
 
-    Point3<T> operator-() const { return Point3<T>{ -x, -y, -z }; }
+    Vector3<T> operator-() const { return Vector3<T>{ -x, -y, -z }; }
 };
 
-using Point3f = Point3<float>;
-using Point3d = Point3<double>;
+using Vector3f = Vector3<float>;
+using Vector3d = Vector3<double>;
 
 // standard-like functions
 inline float radf(float deg) {

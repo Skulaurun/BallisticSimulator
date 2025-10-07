@@ -8,8 +8,8 @@
 
 Application::Application() : running(false), canHit(false), hitAngle(0.0f) {
     input = InputParameters{
-        .pSource = math::Point3f{ 0.0f, 0.0f, 0.0f },
-        .pTarget = math::Point3f{ 600.0f, 10.0f, 400.0f },
+        .pSource = math::Vector3f{ 0.0f, 0.0f, 0.0f },
+        .pTarget = math::Vector3f{ 600.0f, 10.0f, 400.0f },
         .bSpeed = 100.0f,
         .bMass = 40.0f,
 
@@ -79,12 +79,12 @@ void Application::commandSetParam(const std::string_view line) {
 
     bool parseError = false;
     if (key == "source") {
-        math::Point3f result = parsePoint3(value, parseError);
+        math::Vector3f result = parsePoint3(value, parseError);
         if (!parseError) {
             input.pSource = result;
         }
     } else if (key == "target") {
-        math::Point3f result = parsePoint3(value, parseError);
+        math::Vector3f result = parsePoint3(value, parseError);
         if (!parseError) {
             input.pTarget = result;
         }
@@ -122,8 +122,8 @@ float Application::parseNumber(const std::string_view value, bool& parseError) {
     return output;
 }
 
-math::Point3f Application::parsePoint3(const std::string_view value, bool& parseError) {
-    math::Point3f output = {};
+math::Vector3f Application::parsePoint3(const std::string_view value, bool& parseError) {
+    math::Vector3f output = {};
     std::string s(value);
 
     bool isOk = true;

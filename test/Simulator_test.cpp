@@ -13,15 +13,15 @@ static float vacMaxRange(const float v0) {
     return (v0 * v0) / g * sin(2 * math::radf(45));
 }
 
-static float xzDistance(const math::Point3f& A, const math::Point3f& B) {
+static float xzDistance(const math::Vector3f& A, const math::Vector3f& B) {
     float a = B.x - A.x;
     float b = B.z - A.z;
     return std::sqrtf(a * a + b * b);
 }
 
 TEST_CASE("target is out of range (no drag)") {
-    const math::Point3f source = { 0.0f, 1.0f, 0.0f };
-    const math::Point3f target = { 600.0f, 1.0f, 600.0f };
+    const math::Vector3f source = { 0.0f, 1.0f, 0.0f };
+    const math::Vector3f target = { 600.0f, 1.0f, 600.0f };
     const float v0 = 40.0f;
 
     REQUIRE(xzDistance(source, target) > vacMaxRange(v0));
@@ -33,8 +33,8 @@ TEST_CASE("target is out of range (no drag)") {
 }
 
 TEST_CASE("target is hit (no drag)") {
-    const math::Point3f source = { 0.0f, 1.0f, 0.0f };
-    const math::Point3f target = { 100.0f, 1.0f, 100.0f };
+    const math::Vector3f source = { 0.0f, 1.0f, 0.0f };
+    const math::Vector3f target = { 100.0f, 1.0f, 100.0f };
     const float v0 = 40.0f;
 
     REQUIRE(xzDistance(source, target) < vacMaxRange(v0));
@@ -44,15 +44,15 @@ TEST_CASE("target is hit (no drag)") {
     bool canHit = simulator.run(0.01f);
     REQUIRE(canHit);
 
-    const math::Point3f& last = simulator.getBulletPath().back();
+    const math::Vector3f& last = simulator.getBulletPath().back();
     REQUIRE_THAT(target.x, Catch::Matchers::WithinAbs(last.x, 1.0f));
     REQUIRE_THAT(target.y, Catch::Matchers::WithinAbs(last.y, 1.0f));
     REQUIRE_THAT(target.z, Catch::Matchers::WithinAbs(last.z, 1.0f));
 }
 
 TEST_CASE("elevation angle (no drag)") {
-    const math::Point3f source = { 0.0f, 41.0f, 0.0f };
-    const math::Point3f target = { 600.0f, 1.0f, 600.0f };
+    const math::Vector3f source = { 0.0f, 41.0f, 0.0f };
+    const math::Vector3f target = { 600.0f, 1.0f, 600.0f };
     const float v0 = 100.0f;
 
     float h = std::abs(target.y - source.y);
@@ -92,8 +92,8 @@ TEST_CASE("elevation angle (no drag)") {
 }
 
 TEST_CASE("elevation angle (with drag)") {
-    const math::Point3f source = { 0.0f, 41.0f, 0.0f };
-    const math::Point3f target = { 600.0f, 1.0f, 600.0f };
+    const math::Vector3f source = { 0.0f, 41.0f, 0.0f };
+    const math::Vector3f target = { 600.0f, 1.0f, 600.0f };
     const float v0 = 100.0f;
     const float dt = 0.01f;
 
