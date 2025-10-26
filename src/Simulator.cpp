@@ -14,7 +14,7 @@ Simulator::Simulator(const bool withDrag) :
     withDrag(withDrag)
 {}
 
-void Simulator::setParams(const math::Vector3f source, const math::Vector3f target, const float speed, const float mass) {
+void Simulator::setParams(const Eigen::Vector3f source, const Eigen::Vector3f target, const float speed, const float mass) {
     pSource = source;
     pTarget = target;
     bSpeed = speed;
@@ -32,7 +32,7 @@ bool Simulator::run(const float step) {
         entt::entity bullet = spawnBullet(angleGuess, target);
         RangeCollider& collider = registry.get<RangeCollider>(bullet);
 
-        math::Vector3f& position = registry.get<Position>(bullet).p;
+        Eigen::Vector3f& position = registry.get<Position>(bullet).p;
         bulletPath.clear();
 
         while (true) {
@@ -60,17 +60,19 @@ bool Simulator::run(const float step) {
 }
 
 entt::entity Simulator::spawnBullet(const float angle, const entt::entity target) {
-    float a = pTarget.x - pSource.x;
-    float b = pTarget.z - pSource.z;
+    Eigen::Vector3f direction = pTarget - pSource;
+    direction.y() = 0;
+    direction.normalize();
 
-    float magnitude = std::sqrtf(a * a + b * b);
-    float dx = bSpeed * (a / magnitude) * std::cosf(math::radf(angle));
-    float dz = bSpeed * (b / magnitude) * std::cosf(math::radf(angle));
-    float dy = bSpeed * std::sinf(math::radf(angle));
+    Eigen::Vector3f velocity = {
+        bSpeed * direction.x() * std::cosf(math::radf(angle)),
+        bSpeed * std::sinf(math::radf(angle)),
+        bSpeed * direction.z() * std::cosf(math::radf(angle))
+    };
 
     entt::entity bullet = registry.create();
     registry.emplace<Position>(bullet, Position{ .p = pSource });
-    registry.emplace<Velocity>(bullet, Velocity{ .d = { dx, dy, dz } });
+    registry.emplace<Velocity>(bullet, Velocity{ .d = velocity });
     registry.emplace<RigidBody>(bullet, RigidBody{ .mass = bMass });
     registry.emplace<RangeCollider>(bullet, RangeCollider{ .target = target, .error = 1.0f });
 
@@ -80,7 +82,7 @@ entt::entity Simulator::spawnBullet(const float angle, const entt::entity target
 void Simulator::updatePhysics(const float step) {
     auto view = registry.view<Velocity, RigidBody>();
     for (auto [entity, velocity, body] : view.each()) {
-        math::Vector3f& v = velocity.d;
+        Eigen::Vector3f& v = velocity.d;
 
         /*
             Source: https://www.youtube.com/watch?v=iwfeqRBm3LQ
@@ -92,41 +94,38 @@ void Simulator::updatePhysics(const float step) {
             constexpr float A = float(M_PI) * R * R;
             constexpr float Cd = 0.295f; // Drag coefficient
         
-            float vLength = v.magnitude();
-            math::Vector3f vUnit = v.normalize();
-            math::Vector3f F = -vUnit * 0.5f * A * Cd * vLength * vLength;
+            float vLength = v.norm();
+            Eigen::Vector3f vUnit = v.normalized();
+            Eigen::Vector3f F = -vUnit * 0.5f * A * Cd * vLength * vLength;
         
             // Apply Quadratic Drag Force
             v += (F / body.mass) * step;
         }
 
         // Apply Gravity
-        v.y += -9.8f * step;
+        v.y() += -9.8f * step;
     }
 }
 
 void Simulator::updateMovement(const float step) {
     auto view = registry.view<Position, Velocity>();
     for (auto [entity, position, velocity] : view.each()) {
-        position.p.x += velocity.d.x * step;
-        position.p.y += velocity.d.y * step;
-        position.p.z += velocity.d.z * step;
+        position.p.x() += velocity.d.x() * step;
+        position.p.y() += velocity.d.y() * step;
+        position.p.z() += velocity.d.z() * step;
     }
 }
 
 void Simulator::updateCollision() {
     auto view = registry.view<Position, RangeCollider>();
     for (auto [entity, position, collider] : view.each()) {
-        math::Vector3f& a = position.p;
-        math::Vector3f& b = registry.get<Position>(collider.target).p;
-        float dx = b.x - a.x;
-        float dy = b.y - a.y;
-        float dz = b.z - a.z;
-        float distance = dx*dx + dy*dy + dz*dz;
+        Eigen::Vector3f& a = position.p;
+        Eigen::Vector3f& b = registry.get<Position>(collider.target).p;
+        float distance = (b - a).squaredNorm();
         if (distance <= collider.error * collider.error) {
             collider.isHit = true;
         }
-        if (a.y <= 0.0f) {
+        if (a.y() <= 0.0f) {
             collider.isGroundHit = true;
         }
     }
@@ -136,6 +135,6 @@ float Simulator::getHitAngle() const {
     return hitAngle;
 }
 
-const std::vector<math::Vector3f>& Simulator::getBulletPath() const {
+const std::vector<Eigen::Vector3f>& Simulator::getBulletPath() const {
     return bulletPath;
 }

@@ -12,5 +12,6 @@ target_include_directories(Test PUBLIC
 
 target_link_libraries(Test
     EnTT::EnTT
+    Eigen3::Eigen
     Catch2::Catch2WithMain
 )

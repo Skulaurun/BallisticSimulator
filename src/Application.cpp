@@ -8,8 +8,8 @@
 
 Application::Application() : running(false), canHit(false), hitAngle(0.0f) {
     input = InputParameters{
-        .pSource = math::Vector3f{ 0.0f, 0.0f, 0.0f },
-        .pTarget = math::Vector3f{ 600.0f, 10.0f, 400.0f },
+        .pSource = Eigen::Vector3f{ 0.0f, 0.0f, 0.0f },
+        .pTarget = Eigen::Vector3f{ 600.0f, 10.0f, 400.0f },
         .bSpeed = 100.0f,
         .bMass = 40.0f,
 
@@ -43,8 +43,8 @@ void Application::run() {
 
 void Application::printHelp() {
     std::println("Input Params:");
-    std::println("* source=({};{};{}) [m]", input.pSource.x, input.pSource.y, input.pSource.z);
-    std::println("* target=({};{};{}) [m]", input.pTarget.x, input.pTarget.y, input.pTarget.z);
+    std::println("* source=({};{};{}) [m]", input.pSource.x(), input.pSource.y(), input.pSource.z());
+    std::println("* target=({};{};{}) [m]", input.pTarget.x(), input.pTarget.y(), input.pTarget.z());
     std::println("* velocity={} [m/s]", input.bSpeed);
     std::println("* mass={} [kg]", input.bMass);
     std::println("* step={}", input.step);
@@ -63,7 +63,7 @@ void Application::commandStart() {
         hitAngle = simulator.getHitAngle();
         const auto& bulletPath = simulator.getBulletPath();
         for (const auto& p : bulletPath) {
-            std::println("[{:.0f},{:.0f},{:.0f}]", p.x, p.y, p.z);
+            std::println("[{:.0f},{:.0f},{:.0f}]", p.x(), p.y(), p.z());
         }
         std::println("Hit at \x1B[92m{}deg\033[0m", hitAngle);
     } else {
@@ -79,12 +79,12 @@ void Application::commandSetParam(const std::string_view line) {
 
     bool parseError = false;
     if (key == "source") {
-        math::Vector3f result = parsePoint3(value, parseError);
+        Eigen::Vector3f result = parsePoint3(value, parseError);
         if (!parseError) {
             input.pSource = result;
         }
     } else if (key == "target") {
-        math::Vector3f result = parsePoint3(value, parseError);
+        Eigen::Vector3f result = parsePoint3(value, parseError);
         if (!parseError) {
             input.pTarget = result;
         }
@@ -122,8 +122,8 @@ float Application::parseNumber(const std::string_view value, bool& parseError) {
     return output;
 }
 
-math::Vector3f Application::parsePoint3(const std::string_view value, bool& parseError) {
-    math::Vector3f output = {};
+Eigen::Vector3f Application::parsePoint3(const std::string_view value, bool& parseError) {
+    Eigen::Vector3f output = {};
     std::string s(value);
 
     bool isOk = true;
@@ -131,9 +131,9 @@ math::Vector3f Application::parsePoint3(const std::string_view value, bool& pars
     if (std::regex_match(s, point)) {
         std::size_t p1 = s.find_first_of(';');
         std::size_t p2 = s.find_last_of(';');
-        output.x = parseNumber(s.substr(1, p1), parseError);
-        output.y = parseNumber(s.substr(p1 + 1, p2), parseError);
-        output.z = parseNumber(s.substr(p2 + 1, s.size() - 1), parseError);
+        output.x() = parseNumber(s.substr(1, p1), parseError);
+        output.y() = parseNumber(s.substr(p1 + 1, p2), parseError);
+        output.z() = parseNumber(s.substr(p2 + 1, s.size() - 1), parseError);
     }
 
     return output;

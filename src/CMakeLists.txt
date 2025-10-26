@@ -11,4 +11,5 @@ add_executable(ShootingSimulator
 
 target_link_libraries(ShootingSimulator
     EnTT::EnTT
+    Eigen3::Eigen
 )

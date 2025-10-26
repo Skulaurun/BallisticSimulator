@@ -5,36 +5,6 @@
 
 namespace math {
 
-template<typename T>
-struct Vector3 {
-    T x;
-    T y;
-    T z;
-
-    inline T magnitude() {
-        return std::sqrt(x * x + y * y + z * z);
-    }
-    inline Vector3<T> normalize() {
-        const T length = magnitude();
-        return Vector3<T>(x / length, y / length, z / length);
-    }
-
-    Vector3<T> operator*(const T scalar) const { return Vector3<T>(x * scalar, y * scalar, z * scalar); }
-    Vector3<T> operator/(const T scalar) const { return Vector3<T>(x / scalar, y / scalar, z / scalar); }
-    Vector3<T> operator+(const T scalar) const { return Vector3<T>(x + scalar, y + scalar, z + scalar); }
-    Vector3<T> operator-(const T scalar) const { return Vector3<T>(x - scalar, y - scalar, z - scalar); }
-
-    Vector3<T> operator+(const Vector3<T>& other) const { return Vector3<T>(x + other.x, y + other.y, z + other.z); }
-    Vector3<T> operator-(const Vector3<T>& other) const { return Vector3<T>(x - other.x, y - other.y, z - other.z); }
-    Vector3<T>& operator+=(const Vector3<T>& other) { x += other.x; y += other.y; z += other.z; return *this; }
-    Vector3<T>& operator-=(const Vector3<T>& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
-
-    Vector3<T> operator-() const { return Vector3<T>{ -x, -y, -z }; }
-};
-
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
-
 // standard-like functions
 inline float radf(float deg) {
     return deg * static_cast<float>(M_PI) / 180.0f;

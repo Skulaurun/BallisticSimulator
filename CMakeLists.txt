@@ -16,6 +16,14 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
+    Eigen
+    GIT_REPOSITORY https://gitlab.com/libeigen/eigen
+    GIT_TAG 5.0.0
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor/eigen
+    OVERRIDE_FIND_PACKAGE
+)
+
+FetchContent_Declare(
     Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2
     GIT_TAG v3.10.0
@@ -25,6 +33,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(
     EnTT
+    Eigen
     Catch2
 )
 

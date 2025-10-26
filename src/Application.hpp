@@ -3,9 +3,11 @@
 #include "Simulator.hpp"
 #include "Math.hpp"
 
+#include <Eigen/Dense>
+
 struct InputParameters {
-    math::Vector3f pSource;
-    math::Vector3f pTarget;
+    Eigen::Vector3f pSource;
+    Eigen::Vector3f pTarget;
     float bSpeed;
     float bMass;
 
@@ -27,7 +29,7 @@ private:
     void commandSetParam(const std::string_view line);
 
     float parseNumber(const std::string_view value, bool& parseError);
-    math::Vector3f parsePoint3(const std::string_view value, bool& parseError);
+    Eigen::Vector3f parsePoint3(const std::string_view value, bool& parseError);
 
 private:
     bool running;
